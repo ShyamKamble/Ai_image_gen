@@ -115,7 +115,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
-export  function LoginForm() {
+export  function LoginForm({ setIsLoggedIn, setUsername, setCredits }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -127,14 +127,26 @@ export  function LoginForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      console.log("Form data:", form); // Debug form data
       const res = await axios.post("http://localhost:5000/login", form);
-      const token = res.data.token;
+      console.log("Response data:", res.data); // Debug response data
+      // const token = res.data.token;
+      const { token, name, credits, userid } = res.data;
+      console.log("Token:", token); // Debug token
+      // localStorage.setItem("token", token);
       localStorage.setItem("token", token);
-      navigate("/image-generator");
+localStorage.setItem("username", name);
+localStorage.setItem("credits", credits);
+localStorage.setItem("userId", userid);
+      console.log("Navigating to /generate"); // Debug navigation
+      navigate("/generate");
+      // navigate("/generate");
     } catch (err) {
+      console.error("Login error:", err); // Debug error
       setError(err.response?.data?.message || "Login failed.");
     }
   };
+// Login.jsx
 
   return (
     <div className="flex items-center justify-center min-h-screen">

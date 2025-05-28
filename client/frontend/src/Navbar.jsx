@@ -1,124 +1,121 @@
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuItem,
   NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
-const Navbar1 = (
-
-  {
-  logo = {
-    
-    title: "Frontend",
-  },
-  menu = [
-    { title: "Home", url: "#" },
-    
-  ],
+const Navbar1 = ({
+  logo = { title: "Frontend", url: "/" },
+  menu = [{ title: "Home", url: "/" }],
   auth = {
-    login: { title: "Login", url: "#" },
-    signup: { title: "Sign up", url: "#" },
+    login: { title: "Login", url: "/login" },
+    signup: { title: "Sign up", url: "/signup" },
   },
-}) => 
-  {   const navigate = useNavigate();
+  isLoggedIn,
+  setIsLoggedIn,
+  credits,        // ⬅️ CHANGED: receive credits from props
+  username,       // ⬅️ CHANGED: receive username from props
+}) => {
+  const navigate = useNavigate();
 
-    const handleLoginClick = () => {
-      navigate("/login");
-    };
-  
-    const handleSignupClick = () => {
-      navigate("/signup");
-    };
-  return (
-    <section className="py-4 ml-25">
-      <div className="container">
-        <nav className="hidden justify-between lg:flex">
-          <div className="flex items-center gap-6">
-            <a href={logo.url} className="flex items-center gap-2">
-              <img src={logo.src} className="max-h-8" alt={logo.alt} />
-              <span className="text-lg font-semibold tracking-tighter">{logo.title}</span>
-            </a>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a onClick={handleLoginClick}href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a onClick={handleSignupClick}href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
-          </div>
-        </nav>
-      </div>
-    </section>
-  );
-};
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("credits");
+    localStorage.removeItem("username");
+    setIsLoggedIn(false);            // ⬅️ CHANGED: inform App that user logged out
+    navigate("/");                   // ⬅️ CHANGED: redirect home on logout
+  };
 
-const renderMenuItem = (item) => {
-  if (item.items) {
+  const renderMenuItem = (item) => {
+    if (item.items) {
+      return (
+        <NavigationMenuItem key={item.title}>
+          <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+          <NavigationMenuContent className="bg-popover text-popover-foreground">
+            {item.items.map((sub) => (
+              <NavigationMenuLink asChild key={sub.title} className="w-80">
+                <a
+                  href={sub.url}
+                  className="flex gap-4 rounded-md p-3 hover:bg-muted"
+                >
+                  <div>{sub.icon}</div>
+                  <div>
+                    <div className="font-semibold">{sub.title}</div>
+                    {sub.description && (
+                      <p className="text-sm text-muted-foreground">
+                        {sub.description}
+                      </p>
+                    )}
+                  </div>
+                </a>
+              </NavigationMenuLink>
+            ))}
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      );
+    }
     return (
       <NavigationMenuItem key={item.title}>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-        <NavigationMenuContent className="bg-popover text-popover-foreground">
-          {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-80">
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
-        </NavigationMenuContent>
+        <NavigationMenuLink
+          href={item.url}
+          className="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-muted"
+        >
+          {item.title}
+        </NavigationMenuLink>
       </NavigationMenuItem>
     );
-  }
+  };
 
   return (
-    <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
-      >
-        {item.title}
-      </NavigationMenuLink>
-    </NavigationMenuItem>
-  );
-};
-
-const SubMenuLink = ({ item }) => {
-  return (
-    <a
-      className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
-      href={item.url}
-    >
-      <div className="text-foreground">{item.icon}</div>
-      <div>
-        <div className="text-sm font-semibold">{item.title}</div>
-        {item.description && <p className="text-sm leading-snug text-muted-foreground">{item.description}</p>}
-      </div>
-    </a>
+    <section className="container mx-auto px-4 py-4">  {/* ⬅️ CHANGED: unified CSS */}
+      <nav className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <a href={logo.url} className="flex items-center gap-2">
+            {logo.src && (
+              <img src={logo.src} alt={logo.alt} className="max-h-8" />
+            )}
+            <span className="text-lg font-semibold">
+              {logo.title}
+            </span>
+          </a>
+          <NavigationMenu>
+            <NavigationMenuList>
+              {menu.map(renderMenuItem)}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+        <div className="flex items-center gap-2">
+          {isLoggedIn ? (
+            <>
+              <Button asChild size="sm">
+                <span>
+                  {username && `${username} • `}Credits: {credits}  {/* ⬅️ CHANGED: show username & credits */}
+                </span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild variant="outline" size="sm">
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+              <Button asChild size="sm">
+                <a href={auth.signup.url}>{auth.signup.title}</a>
+              </Button>
+            </>
+          )}
+        </div>
+      </nav>
+    </section>
   );
 };
 
