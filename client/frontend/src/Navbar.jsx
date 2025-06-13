@@ -19,8 +19,8 @@ const Navbar1 = ({
   },
   isLoggedIn,
   setIsLoggedIn,
-  credits,        // ⬅️ CHANGED: receive credits from props
-  username,       // ⬅️ CHANGED: receive username from props
+  credits,        
+  username,        
 }) => {
   const navigate = useNavigate();
 
@@ -29,8 +29,8 @@ const Navbar1 = ({
     localStorage.removeItem("userId");
     localStorage.removeItem("credits");
     localStorage.removeItem("username");
-    setIsLoggedIn(false);            // ⬅️ CHANGED: inform App that user logged out
-    navigate("/");                   // ⬅️ CHANGED: redirect home on logout
+    setIsLoggedIn(false);           
+    navigate("/");                   
   };
 
   const renderMenuItem = (item) => {
