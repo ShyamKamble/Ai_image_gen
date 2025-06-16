@@ -1,17 +1,20 @@
-// Import necessary modules and controllers
-import { register, login, credits, deductCredit } from "../controller/usercontrol.js";
-import userauth from "../middleware/auth.js";
 import express from "express";
+import {
+  register,
+  login,
+  credits,
+  deductCredit,
+} from "../controller/usercontrol.js";
+import userauth from "../middleware/auth.js";
 
-// Initialize the router
 const userRouter = express.Router();
 
-// Define routes
-userRouter.post("/register", register); // Route for user registration
-userRouter.post("/login", login); // Route for user login
-userRouter.post("/credits", credits);
-userRouter.post("/auth", userauth, credits); // Route for getting user credits (protected by middleware)
-userRouter.post("/deduct", userauth, deductCredit); // Route for deducting user credits (protected by middleware)
+// ✅ Public routes (no auth required)
+userRouter.post("/register", register);
+userRouter.post("/login", login);
+userRouter.post("/credits", credits); // public version (with body.userid)
+userRouter.post("/auth", userauth, credits); // protected version (uses JWT & req.user)
+      
+userRouter.post("/deduct", userauth, deductCredit);   // 🛡️ Secure: deduct 1 credit
 
-// Export the router
 export default userRouter;

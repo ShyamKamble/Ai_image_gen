@@ -9,18 +9,21 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
+// import { title } from "process";
 
 const Navbar1 = ({
   logo = { title: "Frontend", url: "/" },
-  menu = [{ title: "Home", url: "/" }],
+  menu = [{ title: "Home", url: "/" },
+    {title: "Pricing", url: "/pricing"},
+  ],
   auth = {
     login: { title: "Login", url: "/login" },
     signup: { title: "Sign up", url: "/signup" },
   },
   isLoggedIn,
   setIsLoggedIn,
-  credits,        // ⬅️ CHANGED: receive credits from props
-  username,       // ⬅️ CHANGED: receive username from props
+  credits,        
+  username,        
 }) => {
   const navigate = useNavigate();
 
@@ -29,8 +32,8 @@ const Navbar1 = ({
     localStorage.removeItem("userId");
     localStorage.removeItem("credits");
     localStorage.removeItem("username");
-    setIsLoggedIn(false);            // ⬅️ CHANGED: inform App that user logged out
-    navigate("/");                   // ⬅️ CHANGED: redirect home on logout
+    setIsLoggedIn(false);           
+    navigate("/");                   
   };
 
   const renderMenuItem = (item) => {
